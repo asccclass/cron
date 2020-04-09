@@ -24,8 +24,42 @@ Day of week  | Yes        | 0-6 or SUN-SAT  | * / , - ?
 ### Example
 
 ```
+import (
+   "log"
+   "os"
+   "fmt"
+   "time"
+   "os/signal"
+   "github.com/asccclass/cron"
+)
+
 func main() {
-   c := cron.New()
+   c := CRON.NewCronJob()
+   id, err := c.AddFunc("* * * * *", func() { fmt.Println("Every minutes...") })  // specific minutes
+   if err != nil {
+      fmt.Println(err.Error())
+      return
+   }
+   fmt.Printf("Running job:%d\n", id)
+   c.Start()
+   defer c.Stop()
+   select{}
+
+   go func(){
+      for {
+         time.Sleep(time.Second)
+         log.Println("application is running.")
+      }
+   }()
+   msgChan:=make(chan os.Signal,1)
+   signal.Notify(msgChan, os.Interrupt, os.Kill)
+   <-msgChan
+}
+```
+
+* Set time example
+
+```
    c.AddFunc("30 * * * *", func() { fmt.Println("Every hour on the half hour") })
    c.AddFunc("30 3-6,20-23 * * *", func() { fmt.Println(".. in the range 3-6am, 8-11pm") })
    c.AddFunc("CRON_TZ=Asia/Tokyo 30 04 * * *", func() { fmt.Println("Runs at 04:30 Tokyo time every day") })
@@ -33,18 +67,4 @@ func main() {
    c.AddFunc("@every 1m", func() { fmt.Println("Every hour thirty, starting an hour thirty from now") })
    c.Start()
    c.AddFunc("@daily", func() { fmt.Println("Every day") })
-// inspect(c.Entries())
-   defer c.Stop() // Stop the scheduler (does not stop any jobs already running).
-      select{}
-
-      go func(){
-         for {
-            time.Sleep(time.Second)
-            log.Println("application is running.")
-         }
-      }()
-      msgChan:=make(chan os.Signal,1)
-      signal.Notify(msgChan, os.Interrupt, os.Kill)
-      <-msgChan
-}
 ```

@@ -1,4 +1,4 @@
-package CORN 
+package CRON 
 
 import (
    "github.com/robfig/cron"
