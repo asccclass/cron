@@ -17,16 +17,6 @@ type CronJob struct {
    CronQue	[]CronJobQue
 }
 
-func NewCronJob() (*CronJob) {
-   c := cron.New()
-   d := []CronJobQue{}
-
-   return &CronJob {
-      Cronjob: c,
-      CronQue: d,
-   }
-}
-
 // AddFunc adds a func to the Cron to be run on the given schedule. 
 func(core *CronJob) AddJob(timestring string, f cron.Job) (error) {
    id, err := core.Cronjob.AddJob(timestring, f)
@@ -73,3 +63,24 @@ func(core *CronJob) Remove(id cron.EntryID) {
 func(core *CronJob) Stop() {
    core.Cronjob.Stop()
 }
+
+// 遠端設定函數
+func(core *CronJob) SetFunction(timestring, funcName string)(error) {
+   m := map[string]func(string) (cron.EntryID, error) {
+        "someFunction1": someFunction1,
+        "someFunction2": someFunction2,
+   }
+   return core.AddFunc(timestring, m[funcName])
+}
+
+// Initial
+func NewCronJob() (*CronJob) {
+   c := cron.New()
+   d := []CronJobQue{}
+
+   return &CronJob {
+      Cronjob: c,
+      CronQue: d,
+   }
+}
+
