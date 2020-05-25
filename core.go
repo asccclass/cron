@@ -44,7 +44,7 @@ func(core *CronJob) AddFunc(timestring string, f func()) (cron.EntryID, error) {
       LastExecuteTime: "",
    }
    core.CronQue = append(core.CronQue, que)
-   return 0, nil
+   return id, nil
 }
 
 func(core *CronJob) Start() {
@@ -62,15 +62,6 @@ func(core *CronJob) Remove(id cron.EntryID) {
 
 func(core *CronJob) Stop() {
    core.Cronjob.Stop()
-}
-
-// 遠端設定函數
-func(core *CronJob) SetFunction(timestring, funcName string)(error) {
-   m := map[string]func(string) (cron.EntryID, error) {
-        "someFunction1": someFunction1,
-        "someFunction2": someFunction2,
-   }
-   return core.AddFunc(timestring, m[funcName])
 }
 
 // Initial
