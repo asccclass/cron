@@ -18,7 +18,7 @@ type CronJob struct {
 }
 
 // AddFunc adds a func to the Cron to be run on the given schedule. 
-func(core *CronJob) AddJob(timestring string, f cron.Job) (error) {
+func(core *CronJob) AddWorker(timestring string, f cron.Job) (error) {
    id, err := core.Cronjob.AddJob(timestring, f)
    if err != nil {
       return err
